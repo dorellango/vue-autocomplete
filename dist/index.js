@@ -771,7 +771,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Autocomplete_vue__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Autocomplete_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Autocomplete_vue__);
 
-
 /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__Autocomplete_vue___default.a);
 
 /***/ }),
@@ -984,65 +983,69 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-
-
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            show: false,
-            query: '',
-            searching: false,
-            matches: [],
-            selected: false
-        };
+  data: function data() {
+    return {
+      show: false,
+      query: '',
+      searching: false,
+      matches: [],
+      selected: false
+    };
+  },
+  props: ['keyName', 'endpoint', 'placeholder', 'overwrite', 'maxHeight', 'items'],
+  // mounted() {
+  //     if(this.overwrite) {
+  //         this.select(this.overwrite);
+  //     }
+  // },
+  methods: {
+    search: function search(event) {
+      this.$emit('input', event.target.value);
+      this.$emit('searching', event.target.value);
+      if (this.query === '') return this.reset();
+      this.show = true;
+      this.searching = true;
+      this.selected = false;
+      this["fetch".concat(this.items ? 'Items' : 'Endpoint')](); // this.{};
     },
+    fetchEndpoint: __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.throttle(function () {
+      var _this = this;
 
-    props: ['keyName', 'endpoint', 'placeholder', 'overwrite', 'maxHeight'],
-    mounted: function mounted() {
-        if (this.overwrite) {
-            this.select(this.overwrite);
-        }
+      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(this.endpoint + this.query).then(function (response) {
+        _this.matches = response.data;
+        _this.searching = false;
+      });
+    }, 1500),
+    fetchItems: function fetchItems() {
+      var _this2 = this;
+
+      this.matches = this.items.filter(function (item) {
+        return item[_this2.keyName].toLowerCase().indexOf(_this2.query.toLowerCase()) > -1;
+      });
+      this.searching = false;
     },
-
-    methods: {
-        search: function search(event) {
-            this.$emit('input', event.target.value);
-            this.$emit('searching', event.target.value);
-            if (this.query === '') return this.reset();
-            this.show = true;
-            this.searching = true;
-            this.selected = false;
-            this.fetch();
-        },
-
-        fetch: __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.throttle(function () {
-            var _this = this;
-
-            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(this.endpoint + this.query).then(function (response) {
-                _this.matches = response.data;
-                _this.searching = false;
-            });
-        }, 1500),
-        select: function select(match) {
-            this.selected = match;
-            this.show = false;
-            this.query = '';
-
-            this.$emit('selected', match);
-        },
-        clicked: function clicked() {
-            this.reset();
-            this.$emit('clicked');
-        },
-        reset: function reset() {
-            this.query = '';
-            this.matches = [];
-            this.show = false;
-            this.selected = false;
-        }
+    select: function select(match) {
+      this.selected = match;
+      this.show = false;
+      this.query = '';
+      this.$emit('selected', match);
+    },
+    clicked: function clicked() {
+      this.reset();
+      this.$emit('clicked');
+    },
+    reset: function reset() {
+      this.query = '';
+      this.matches = [];
+      this.show = false;
+      this.selected = false;
     }
+  }
 });
 
 /***/ }),
@@ -19311,7 +19314,7 @@ var render = function() {
           expression: "query"
         }
       ],
-      staticClass: "form-control",
+      staticClass: "do-control",
       class: [_vm.selected ? "font-bold" : ""],
       attrs: {
         type: "text",
@@ -19332,47 +19335,10 @@ var render = function() {
       }
     }),
     _vm._v(" "),
-    _c(
-      "div",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: this.searching,
-            expression: "this.searching"
-          }
-        ],
-        staticClass:
-          "pointer-events-none absolute pin-y pin-r flex items-center px-2"
-      },
-      [
-        _c(
-          "svg",
-          {
-            staticClass:
-              "fill-current h-6 w-6 animated pulse infinite text-grey",
-            attrs: { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20" }
-          },
-          [
-            _c("path", {
-              attrs: {
-                d:
-                  "M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"
-              }
-            })
-          ]
-        )
-      ]
-    ),
-    _vm._v(" "),
     _vm.selected
       ? _c(
           "div",
-          {
-            staticClass:
-              "pointer-events-none absolute pin-y pin-l flex items-center ml-2 my-1  px-2 bg-teal text-teal-lightest text-sm rounded"
-          },
+          { staticClass: "do-selected" },
           [
             _vm._t(
               "selected",
@@ -19401,7 +19367,7 @@ var render = function() {
             expression: "show"
           }
         ],
-        staticClass: "shadow-md mt-1 absolute pin-x z-50 bg-white",
+        staticClass: "do-dropdown",
         class: [_vm.maxHeight ? "overflow-y-scroll" : ""],
         style: { maxHeight: _vm.maxHeight + "px" }
       },
@@ -19412,8 +19378,7 @@ var render = function() {
                 "a",
                 {
                   key: index,
-                  staticClass:
-                    "text-sm px-2 py-2 block border-b border-grey-light hover:bg-blue-light hover:text-blue-lightest text-grey-dark cursor",
+                  staticClass: "do-matches",
                   attrs: { href: "#" },
                   on: {
                     click: function($event) {
