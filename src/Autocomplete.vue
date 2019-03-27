@@ -2,7 +2,7 @@
     <div class="relative">
         <input v-model="query"
             class="do-control"
-            :class="[ selected ? 'font-bold': '']"
+            :class="[ selected ? 'font-bold': '', controlCss]"
             type="text"
             :placeholder="[ selected ? '' : placeholder]"
             @click="clicked"
@@ -16,7 +16,7 @@
         </div> -->
 
         <div v-if="selected"
-            class="do-selected"> <!-- pointer-events-none absolute pin-y pin-l flex items-center ml-2 my-1  px-2 bg-teal text-teal-lightest text-sm rounded -->
+            :class="['do-selected', selectedCss]"> <!-- pointer-events-none absolute pin-y pin-l flex items-center ml-2 my-1  px-2 bg-teal text-teal-lightest text-sm rounded -->
             <slot name="selected" :selected="selected">
                 {{ selected[keyName] }}
             </slot>
@@ -25,14 +25,13 @@
         <!-- dropdown -->
         <!-- shadow-md mt-1 absolute pin-x z-50 bg-white -->
         <div v-show="show"
-            class="do-dropdown"
-            :class="[ maxHeight ? 'overflow-y-scroll' : '']"
+            :class="[ maxHeight ? 'overflow-y-scroll' : '', 'do-dropdown', dropdownCss ]"
             :style="{ maxHeight: maxHeight + 'px' }"
             >
             <template v-if="matches.length > 0"> <!-- text-sm px-2 py-2 block border-b border-grey-light hover:bg-blue-light hover:text-blue-lightest text-grey-dark cursor -->
                 <a href="#"
                     v-for="(match, index) in matches.slice(0, 10)"
-                    class="do-matches"
+                    :class="['do-matches', matchesCss]"
                     @click.prevent="select(match)"
                     :key="index">
                     <slot name="match" :match="match">
@@ -60,10 +59,15 @@ export default {
     },
     props: [
         'keyName',
+        'keyValue',
         'endpoint',
         'placeholder',
         'overwrite',
         'maxHeight',
+        'controlCss',
+        'selectedCss',
+        'dropdownCss',
+        'matchesCss',
         'items'
     ],
     // mounted() {
@@ -101,10 +105,16 @@ export default {
             this.query = ''
 
             this.$emit('selected', match);
+            if (this.keyValue) {
+                this.$emit('input', match[this.keyValue]);
+            }
         },
         clicked() {
             this.reset();
             this.$emit('clicked');
+            if (this.keyValue) {
+                this.$emit('input', '');
+            }
         },
         reset(){
             this.query = ''
