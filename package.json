@@ -19,5 +19,8 @@
         "cross-env": "^5.2.0",
         "laravel-mix": "^2.1.14",
         "lodash": "^4.17.11"
+    },
+    "devDependencies": {
+        "eslint": "^5.16.0"
     }
 }
