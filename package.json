@@ -1,6 +1,6 @@
 {
     "name": "do-vue-autocomplete",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "A simple and custom autocomplete input",
     "main": "dist/index.js",
     "scripts": {
@@ -15,10 +15,8 @@
     "author": "Diego Orellana",
     "license": "MIT",
     "dependencies": {
-        "axios": "^0.18.0",
         "cross-env": "^5.2.0",
-        "laravel-mix": "^2.1.14",
-        "lodash": "^4.17.11"
+        "laravel-mix": "^2.1.14"
     },
     "devDependencies": {
         "eslint": "^5.16.0"
