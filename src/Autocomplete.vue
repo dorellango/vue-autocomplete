@@ -90,6 +90,10 @@ export default {
 			type: String,
 			default: null
 		},
+		isAjax: {
+			type: Boolean,
+			default: false
+		},
 		items: {
 			type: Array,
 			default () {
@@ -113,10 +117,10 @@ export default {
 			if(this.query === '') return this.reset()
 			this.show = true
 			this.selected = false
-			if(this.keyName) {
-				return this.fetchItems()
+			if(this.isAjax) {
+				return this.matches = this.items
 			}
-			this.matches = this.items
+			this.fetchItems()
 			
 		},
 		toggleLoading (toggle = null) {
