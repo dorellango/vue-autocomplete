@@ -110,6 +110,13 @@ export default {
 			selected: false,
 		}
 	},
+	watch: {
+		items() {
+			if(this.isAjax) {
+				this.matches = this.items
+			}
+		}
+	},
 	methods: {
 		search (event){
 			this.$emit('input', event.target.value)
@@ -117,10 +124,9 @@ export default {
 			if(this.query === '') return this.reset()
 			this.show = true
 			this.selected = false
-			if(this.isAjax) {
-				return this.matches = this.items
+			if(! this.isAjax) {
+				this.fetchItems()
 			}
-			this.fetchItems()
 			
 		},
 		toggleLoading (toggle = null) {
