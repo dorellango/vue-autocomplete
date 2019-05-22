@@ -113,7 +113,11 @@ export default {
 			if(this.query === '') return this.reset()
 			this.show = true
 			this.selected = false
-			this.fetchItems()
+			if(this.keyName) {
+				return this.fetchItems()
+			}
+			this.matches = this.items
+			
 		},
 		toggleLoading (toggle = null) {
 			if (toggle == null) {
